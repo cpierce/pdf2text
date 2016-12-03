@@ -1,0 +1,24 @@
+{
+    "name": "cpierce/pdf2text",
+    "description": "Client library for extracting text form PDF",
+    "license": "GNU v3",
+    "homepage": "https://github.com/cpierce/paypal-wpp",
+    "authors": [
+        {
+            "name": "Chris Pierce",
+            "email": "cpierce@csdurant.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.5.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pdf2text\\": "src/Pdf2text"
+        }
+    },
+    "minimum-stability": "stable"
+}
