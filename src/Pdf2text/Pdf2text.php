@@ -4,7 +4,8 @@
  *
  * @author  Chris Pierce <cpierce@csdurant.com>
  * @license GNU General Public License Version 3 or Later
- *
+ * @package Pdf2text
+ * 
  * @link http://www.github.com/cpierce/pdf2text
  */
 
