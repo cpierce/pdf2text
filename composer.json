@@ -2,7 +2,7 @@
     "name": "cpierce/pdf2text",
     "description": "Client library for extracting text form PDF",
     "license": "GNU v3",
-    "homepage": "https://github.com/cpierce/paypal-wpp",
+    "homepage": "https://github.com/cpierce/pdf2text",
     "authors": [
         {
             "name": "Chris Pierce",
