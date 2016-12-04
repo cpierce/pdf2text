@@ -52,7 +52,7 @@ class Pdf2text
      * @param array  $options
      * @throws Exception
      */
-    public function __construct($filename = null, $options = [])
+    public function __construct($filename = null, $options = null)
     {
         if (!$filename) {
             throw new Exception('No Filename Specified');
@@ -60,7 +60,7 @@ class Pdf2text
 
         $this->setFilename($filename);
 
-        if (count($options) > 0) {
+        if (!empty($options)) {
             $this->setOptions($options);
         }
     }
@@ -88,8 +88,12 @@ class Pdf2text
      */
     protected function setOptions($options)
     {
-        $this->convertQuotes = $options['convertQuotes'];
-        $this->multibyte     = $options['multibyteUnicode'] ? 4 : 2;
+        if (!empty($options['convertQuotes'])) {
+            $this->convertQuotes = $options['convertQuotes'];
+        }
+        if (!empty($options['multibyteUnicode'])) {
+            $this->multibyte = $options['multibyteUnicode'] ? 4 : 2;
+        }
     }
 
     /**
