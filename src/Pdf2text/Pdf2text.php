@@ -55,7 +55,7 @@ class Pdf2text
     public function __construct($filename = null, $options = null)
     {
         if (!$filename) {
-            throw new Exception('No Filename Specified');
+            throw new \RuntimeException('No Filename Specified');
         }
 
         $this->setFilename($filename);
@@ -297,7 +297,7 @@ class Pdf2text
             for ($i = 0; $i < $state - 1; $i++) {
                 try {
                     if (!($o = chr($sum >> ((3 - $i) * 8)))) {
-                        throw new Exception('Error');
+                        throw new \RuntimeException('An error occurred.');
                     }
                     $output .= $o;
                 } catch (Exception $e) {
