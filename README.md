@@ -1,4 +1,6 @@
 # pdf2text
+[![Build Status](https://travis-ci.org/cpierce/pdf2text.svg?branch=master)](https://travis-ci.org/cpierce/pdf2text)
+
 PDF to Text Library
 
 ## Related Information
