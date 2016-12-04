@@ -86,13 +86,15 @@ class Pdf2text
      *
      * @param array $options
      */
-    protected function setOptions($options)
+    protected function setOptions($options = null)
     {
-        if (!empty($options['convertQuotes'])) {
-            $this->convertQuotes = $options['convertQuotes'];
+        if (isset($options['convertQuotes']) &&
+            !empty($options['convertQuotes'])) {
+                $this->convertQuotes = $options['convertQuotes'];
         }
-        if (!empty($options['multibyteUnicode'])) {
-            $this->multibyte = $options['multibyteUnicode'] ? 4 : 2;
+        if (isset($options['multibyteUnicode']) &&
+            !empty($options['multibyteUnicode'])) {
+                $this->multibyte = $options['multibyteUnicode'] ? 4 : 2;
         }
     }
 
