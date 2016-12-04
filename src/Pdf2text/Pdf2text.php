@@ -5,7 +5,7 @@
  * @author  Chris Pierce <cpierce@csdurant.com>
  * @license GNU General Public License Version 3 or Later
  * @package Pdf2text
- * 
+ *
  * @link http://www.github.com/cpierce/pdf2text
  */
 
@@ -60,7 +60,7 @@ class Pdf2text
 
         $this->setFilename($filename);
 
-        if (!empty($options)) {
+        if (count($options) > 0) {
             $this->setOptions($options);
         }
     }
