@@ -1,7 +1,7 @@
 {
     "name": "cpierce/pdf2text",
     "description": "Client library for extracting text form PDF",
-    "license": "GNU v3",
+    "license": "GNU",
     "homepage": "https://github.com/cpierce/pdf2text",
     "authors": [
         {
