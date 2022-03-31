@@ -1,5 +1,5 @@
 # pdf2text
-[![Build Status](https://travis-ci.org/cpierce/pdf2text.svg?branch=master)](https://travis-ci.org/cpierce/pdf2text)
+[![Build Status](https://travis-ci.com/cpierce/pdf2text.svg?branch=master)](https://travis-ci.com/cpierce/pdf2text)
 
 PDF to Text Library
 
@@ -16,4 +16,5 @@ http://www.adobe.com/devnet/acrobat/pdfs/PDF32000_2008.pdf
 $pdf = 'test.pdf';
 $pdf2text = new \Pdf2text\Pdf2text($pdf);
 $output = $pdf2text->decode();
+vardump($output);
 ```
