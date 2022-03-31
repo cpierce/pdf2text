@@ -16,5 +16,5 @@ http://www.adobe.com/devnet/acrobat/pdfs/PDF32000_2008.pdf
 $pdf = 'test.pdf';
 $pdf2text = new \Pdf2text\Pdf2text($pdf);
 $output = $pdf2text->decode();
-vardump($output);
+var_dump($output);
 ```
