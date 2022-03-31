@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Pdf2text\Test;
 
@@ -22,8 +23,10 @@ class Pdf2textTest extends TestCase
      * Setup Method.
      *
      * @param string $sampleFile
+     * 
+     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $sampleFile = __DIR__ . '/../TestFiles/sample.pdf';
         $this->instance = new Pdf2text($sampleFile, [
@@ -34,8 +37,10 @@ class Pdf2textTest extends TestCase
 
     /**
      * Test Decode Method.
+     * 
+     * @return void
      */
-    public function testDecode()
+    public function testDecode(): void
     {
         $result   = $this->instance->decode();
         $expected = 'My dog is not like other dogs.'
@@ -49,17 +54,21 @@ class Pdf2textTest extends TestCase
     /**
      * Test No File Sent Exception Method.
      *
-     * @expectedException \RuntimeException
+     * @throws \RunTimeException
+     * @return void
      */
-    public function testNoFileSentExceiption()
+    public function testNoFileSentExceiption(): void
     {
+        $this->expectException(\RuntimeException::class);
         $failure = new Pdf2text();
     }
 
     /**
      * Test File Not Found Method.
+     * 
+     * @return void
      */
-    public function testFileNotFound()
+    public function testFileNotFound(): void
     {
         $not_found = new Pdf2text('nofile.pdf');
         $result    = $not_found->decode();

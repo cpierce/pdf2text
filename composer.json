@@ -3,17 +3,15 @@
     "description": "Client library for extracting text form PDF",
     "license": "GPL-3.0-or-later",
     "homepage": "https://github.com/cpierce/pdf2text",
-    "authors": [
-        {
-            "name": "Chris Pierce",
-            "email": "cpierce@csdurant.com"
-        }
-    ],
+    "authors": [{
+        "name": "Chris Pierce",
+        "email": "cpierce@csdurant.com"
+    }],
     "require": {
-        "php": ">=5.4"
+        "php": ">=7.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.5.*"
+        "phpunit/phpunit": ">=9.5"
     },
     "autoload": {
         "psr-4": {

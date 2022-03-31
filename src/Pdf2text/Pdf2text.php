@@ -8,6 +8,7 @@
  *
  * @link http://www.github.com/cpierce/pdf2text
  */
+declare(strict_types = 1);
 
 namespace Pdf2text;
 
@@ -115,7 +116,7 @@ class Pdf2text
      */
     private function decodePDF()
     {
-        $infile = @file_get_contents($this->filename, FILE_BINARY);
+        $infile = @file_get_contents($this->filename, (bool) FILE_BINARY);
 
         if (empty($infile)) {
             return '';
@@ -132,7 +133,7 @@ class Pdf2text
         for ($i = 0; $i < count($objects); $i++) {
             $currentObject = $objects[$i];
 
-            @set_time_limit();
+            @set_time_limit(30);
 
             if (preg_match("#stream[\n|\r](.*)endstream[\n|\r]#ismU",
                 $currentObject . "endstream\r", $stream )) {
