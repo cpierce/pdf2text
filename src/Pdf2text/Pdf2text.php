@@ -116,7 +116,7 @@ class Pdf2text
      */
     private function decodePDF()
     {
-        $infile = @file_get_contents($this->filename, (bool) FILE_BINARY);
+        $infile = @file_get_contents($this->filename);
 
         if (empty($infile)) {
             return '';
@@ -301,7 +301,7 @@ class Pdf2text
                         throw new \RuntimeException('An error occurred.');
                     }
                     $output .= $o;
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // Don't do anything
                 }
             }
@@ -331,7 +331,7 @@ class Pdf2text
     {
         $options = [];
 
-        if (preg_match("#<<(.*)>>#ismU", $object, $options)) {
+        if (preg_match("#<<(.*)>>#ismU", (string)$object, $options)) {
             $options = explode('/', $options[1]);
             @array_shift($options);
 
