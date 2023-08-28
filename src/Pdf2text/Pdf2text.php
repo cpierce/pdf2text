@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /**
  * Library for reading text from PDF file.
  *
@@ -8,9 +9,10 @@
  *
  * @link http://www.github.com/cpierce/pdf2text
  */
-declare(strict_types = 1);
 
 namespace Pdf2text;
+
+use InvalidArgumentException;
 
 /**
  * Pdf2text class.
@@ -47,11 +49,10 @@ class Pdf2text
     private $decodedText = '';
 
     /**
-     * Construct Method.
+     * Construct method.
      *
      * @param string $filename
      * @param array  $options
-     * @throws Exception
      */
     public function __construct($filename = null, $options = null)
     {
@@ -66,28 +67,35 @@ class Pdf2text
         }
     }
 
-    public function decode()
+    /**
+     * Decode method.
+     *
+     * @return string|null
+     */
+    public function decode(): ?string
     {
         $this->decodePDF();
         return $this->output();
     }
 
     /**
-     * Set Filename Method.
+     * Set Filename method.
      *
      * @param string $filename
+     * @return void
      */
-    protected function setFilename($filename)
+    protected function setFilename($filename): void
     {
         $this->filename = $filename;
     }
 
     /**
-     * Set Options Method.
+     * Set Options method.
      *
      * @param array $options
+     * @return void
      */
-    protected function setOptions($options = null)
+    protected function setOptions($options = null): void
     {
         if (isset($options['convertQuotes']) &&
             !empty($options['convertQuotes'])) {
@@ -95,84 +103,85 @@ class Pdf2text
         }
         if (isset($options['multibyteUnicode']) &&
             !empty($options['multibyteUnicode'])) {
-                $this->multibyte = $options['multibyteUnicode'] ? 4 : 2;
+                $this->multibyte = $options['multibyteUnicode'];
         }
     }
 
     /**
-     * Output Method.
+     * Output method.
      *
      * @return string
      */
-    private function output()
+    private function output(): string
     {
         return $this->decodedText;
     }
 
     /**
-     * Decode PDF Method.
+     * Decode PDF method.
      *
-     * @return string
+     * @return void|string
      */
     private function decodePDF()
     {
         $infile = @file_get_contents($this->filename);
 
         if (empty($infile)) {
-            return '';
-        }
+            $this->decodedText = '';
+        } else { 
 
-        $transformations = [];
-        $texts           = [];
+            $transformations = [];
+            $texts           = [];
 
-        // Get the list of all objects.
-        preg_match_all("#obj[\n|\r](.*)endobj[\n|\r]#ismU", $infile .
-            'endobj' . "\r", $objects);
-        $objects = @$objects[1];
+            // Get the list of all objects.
+            preg_match_all("#obj[\n|\r](.*)endobj[\n|\r]#ismU", $infile .
+                'endobj' . "\r", $objects);
+            $objects = @$objects[1];
 
-        for ($i = 0; $i < count($objects); $i++) {
-            $currentObject = $objects[$i];
+            for ($i = 0; $i < count($objects); $i++) {
+                $currentObject = $objects[$i];
 
-            @set_time_limit(30);
+                @set_time_limit(30);
 
-            if (preg_match("#stream[\n|\r](.*)endstream[\n|\r]#ismU",
-                $currentObject . "endstream\r", $stream )) {
+                if (preg_match("#stream[\n|\r](.*)endstream[\n|\r]#ismU",
+                    $currentObject . "endstream\r", $stream )) {
 
-                $stream = ltrim($stream[1]);
-                $options = $this->getObjectOptions($currentObject);
+                    $stream = ltrim($stream[1]);
+                    $options = $this->getObjectOptions($currentObject);
 
-                if (!(empty($options['Length1']) &&
-                    empty($options['Type']) &&
-                    empty($options['Subtype']))) {
-                        continue;
-                }
+                    if (!(empty($options['Length1']) &&
+                        empty($options['Type']) &&
+                        empty($options['Subtype']))) {
+                            continue;
+                    }
 
-                unset($options['Length']);
+                    unset($options['Length']);
 
-                $data = $this->getDecodedStream($stream, $options);
+                    $data = $this->getDecodedStream($stream, $options);
 
-                if (strlen($data)) {
-                    if (preg_match_all("#BT[\n|\r](.*)ET[\n|\r]#ismU", $data .
-                        'ET' . "\r", $textContainers)) {
-                        $textContainers = @$textContainers[1];
-                        $this->getDirtyTexts($texts, $textContainers);
-                    } else {
-                        $this->getCharTransformations($transformations, $data);
+                    if (strlen($data)) {
+                        if (preg_match_all("#BT[\n|\r](.*)ET[\n|\r]#ismU", $data .
+                            'ET' . "\r", $textContainers)) {
+                            $textContainers = @$textContainers[1];
+                            $this->getDirtyTexts($texts, $textContainers);
+                        } else {
+                            $this->getCharTransformations($transformations, $data);
+                        }
                     }
                 }
             }
-        }
 
-        $this->decodedText = $this->getTextUsingTransformations($texts, $transformations);
+            $this->decodedText = $this->getTextUsingTransformations($texts, $transformations);
+        }
     }
 
     /**
-     * Decode ASCII Hex Method.
+     * Decode ASCII Hex method.
      *
      * @param  string $input
      * @return string
      */
-    private function decodeAsciiHex($input)
+    private function decodeAsciiHex($input): string
     {
         $output    = '';
         $isOdd     = true;
@@ -209,7 +218,7 @@ class Pdf2text
                     if ($isOdd) {
                         $codeHigh = $code;
                     } else {
-                        $output .= chr($codeHigh * 16 + $code);
+                        $output .= chr((int) $codeHigh * 16 + (int) $code);
                     }
 
                     $isOdd = !$isOdd;
@@ -222,19 +231,19 @@ class Pdf2text
         }
 
         if ($isOdd) {
-            $output .= chr($codeHigh * 16);
+            $output .= chr((int) $codeHigh * 16);
         }
 
         return $output;
     }
 
     /**
-     * Decode ASCII 85 Method.
+     * Decode ASCII 85 method.
      *
      * @param  string $input
      * @return string
      */
-    private function decodeAscii85($input)
+    private function decodeAscii85($input): string
     {
         $output    = '';
         $isComment = false;
@@ -316,13 +325,17 @@ class Pdf2text
      * @param  string $data
      * @return string
      */
-    private function decodeFlate($data)
+    private function decodeFlate($data): string
     {
-        return @gzuncompress($data);
+        $data = @gzuncompress($data);
+        if ($data === false) {
+            return '';
+        }
+        return $data;
     }
 
     /**
-     * Get Object Options Method.
+     * Get Object Options method.
      *
      * @param  object $object
      * @return array
@@ -331,18 +344,22 @@ class Pdf2text
     {
         $options = [];
 
-        if (preg_match("#<<(.*)>>#ismU", (string)$object, $options)) {
+        if (is_object($object) && !method_exists($object, '__toString')) {
+            return $options;
+        }
+        if (preg_match("#<<(.*)>>#ismU", (string) $object, $options)) {
             $options = explode('/', $options[1]);
             @array_shift($options);
 
             $o = [];
             for ($j = 0; $j < @count($options); $j++) {
-                $options[$j] = preg_replace("#\s+#", ' ', trim($options[$j]));
-                if (strpos($options[$j], ' ') !== false) {
+                $options[$j] = preg_replace("#\s+#", ' ', trim((string) $options[$j]));
+                if (!empty($options[$j]) && strpos($options[$j], ' ') !== false) {
                     $parts = explode(' ', $options[$j]);
                     $o[$parts[0]] = $parts[1];
-                } else
+                } else {
                     $o[$options[$j]] = true;
+                }
             }
             $options = $o;
             unset($o);
@@ -391,12 +408,13 @@ class Pdf2text
     }
 
     /**
-     * Get Dirty Texts Method.
+     * Get Dirty Texts method.
      *
      * @param  array $texts by reference
      * @param  array $textContainers
+     * @return void
      */
-    private function getDirtyTexts(&$texts, $textContainers)
+    private function getDirtyTexts(&$texts, $textContainers): void
     {
         for ($j = 0; $j < count($textContainers); $j++) {
             if (preg_match_all("#\[(.*)\]\s*TJ[\n|\r]#ismU",
@@ -420,12 +438,13 @@ class Pdf2text
     }
 
     /**
-     * Get Char Transformations Method.
+     * Get Char Transformations method.
      *
      * @param  array $transformations by reference
      * @param  string $stream
+     * @return void
      */
-    private function getCharTransformations(&$transformations, $stream)
+    private function getCharTransformations(&$transformations, $stream): void
     {
         preg_match_all("#([0-9]+)\s+beginbfchar(.*)endbfchar#ismU",
             $stream, $chars, PREG_SET_ORDER);
@@ -460,13 +479,13 @@ class Pdf2text
                     trim($current[$k]), $map)) {
                         $from  = hexdec($map[1]);
                         $to    = hexdec($map[2]);
-                        $parts = preg_split("#\s+#", trim($map[3]));
+                        $parts = (array) preg_split("#\s+#", trim($map[3]));
 
                     for ($m = $from, $n = 0;
                         $m <= $to && $n < count($parts);
                         $m++, $n++) {
                             $transformations[sprintf("%04X", $m)] =
-                                sprintf("%04X", hexdec($parts[$n]));
+                                sprintf("%04X", hexdec((string) $parts[$n]));
                     }
                 }
             }
@@ -480,7 +499,7 @@ class Pdf2text
      * @param  array $transformations
      * @return string
      */
-    private function getTextUsingTransformations($texts, $transformations)
+    private function getTextUsingTransformations($texts, $transformations): string
     {
         $document = '';
 
@@ -500,6 +519,9 @@ class Pdf2text
                         $isPlain = false;
                         break;
                     case '>':
+                        if ($this->multibyte < 1) {
+                            throw new InvalidArgumentException('Length must be a postive integer.');
+                        }
                         $hexs = str_split($hex, $this->multibyte);
                         for ($k = 0; $k < count($hexs); $k++) {
 
@@ -536,7 +558,7 @@ class Pdf2text
                         } elseif ($c2 === 'f') {
                             $plain .= '\f';
                         } elseif ($c2 >= '0' && $c2 <= '9') {
-                            $oct    = preg_replace("#[^0-9]#", '',
+                            $oct    = (string) preg_replace("#[^0-9]#", '',
                                 substr($texts[$i], $j + 1, 3));
                             $j     += strlen($oct) - 1;
                             $plain .= html_entity_decode('&#'.octdec($oct).';',

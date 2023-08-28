@@ -15,14 +15,12 @@ class Pdf2textTest extends TestCase
     /**
      * Instance property.
      *
-     * @var object Pdf2text
+     * @var Pdf2text
      */
     protected $instance = null;
 
     /**
-     * Setup Method.
-     *
-     * @param string $sampleFile
+     * Setup method.
      * 
      * @return void
      */
@@ -36,7 +34,7 @@ class Pdf2textTest extends TestCase
     }
 
     /**
-     * Test Decode Method.
+     * Test Decode method.
      * 
      * @return void
      */
@@ -52,7 +50,7 @@ class Pdf2textTest extends TestCase
     }
 
     /**
-     * Test No File Sent Exception Method.
+     * Test No File Sent Exception method.
      *
      * @throws \RunTimeException
      * @return void
@@ -64,7 +62,7 @@ class Pdf2textTest extends TestCase
     }
 
     /**
-     * Test File Not Found Method.
+     * Test File Not Found method.
      * 
      * @return void
      */
