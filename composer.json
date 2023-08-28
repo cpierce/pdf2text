@@ -18,5 +18,8 @@
             "Pdf2text\\": "src/Pdf2text"
         }
     },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
     "minimum-stability": "stable"
 }
